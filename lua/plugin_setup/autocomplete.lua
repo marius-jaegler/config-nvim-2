@@ -21,6 +21,12 @@ cmp.setup {
         completion = cmp.config.window.bordered({}),
         documentation = cmp.config.window.bordered({}),
     },
+    formatting = {
+        format = function(_, item)
+            item.menu = ""
+            return item
+        end,
+    },
 }
 
 
