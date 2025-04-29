@@ -13,10 +13,7 @@ return {
         vim.keymap.set("n", "dn", "<cmd>lua vim.diagnostic.goto_next()<cr>")
         vim.keymap.set("n", "dN", "<cmd>lua vim.diagnostic.goto_prev()<cr>")
 
-        --tree keybinds
-        vim.keymap.set("n", "<leader>tt", ":NvimTreeToggle<CR>")
-
-        vim.keymap.set("n", "nt", ":!alacritty &<CR><CR>")
+        vim.keymap.set("n", "to", ":!alacritty &<CR><CR>")
 
         -- shift lines up/down, will be overwritten by cmp
         vim.keymap.set("n", "<C-j>", "ddp");
@@ -24,6 +21,9 @@ return {
 
         vim.keymap.set("v", '<C-j>', "Dp`[v`]")
         vim.keymap.set("v", '<C-k>', "Dkkp`[v`]")
+
+
+        vim.keymap.set("n", "<leader>tt", ":Neotree toggle<CR>")
     end,
 
     telescope = function(tl)

@@ -1,3 +1,4 @@
+vim.loader.enable(true)
 require("vim_settings")
 
 local kb = require("keybinds")
