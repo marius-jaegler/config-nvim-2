@@ -45,19 +45,26 @@ vim.filetype.add({
 
 local _border = "single"
 
-vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
-  vim.lsp.handlers.hover, {
-    border = _border
-  }
-)
+-- vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
+--     vim.lsp.handlers.hover, {
+--         border = _border
+--     }
+-- )
+--
+-- vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
+--     vim.lsp.handlers.signature_help, {
+--         border = _border
+--     }
+-- )
 
-vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
-  vim.lsp.handlers.signature_help, {
-    border = _border
-  }
-)
+local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
+---@diagnostic disable-next-line: duplicate-set-field
+function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
+    opts = opts or {}
+    opts.border = "rounded" -- Or any other border
+    return orig_util_open_floating_preview(contents, syntax, opts, ...)
+end
 
-
-vim.diagnostic.config{
-  float={border=_border}
+vim.diagnostic.config {
+    float = { border = _border }
 }
