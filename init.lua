@@ -1,6 +1,8 @@
 vim.loader.enable(true)
 require("vim_settings")
 
+
+
 local kb = require("keybinds")
 
 kb.mapleader() -- must be set ONCE before keybinds

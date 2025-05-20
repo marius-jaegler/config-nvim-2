@@ -19,44 +19,50 @@ end
 -- auto install some LSPs
 require("mason").setup()
 require("mason-lspconfig").setup {
-    handlers = {
-        lsp_default, -- default handler
-
-        ["lua_ls"] = function()
-            require("lspconfig").lua_ls.setup {
-                on_init = function(client)
-                    -- add vim globals if this is ~/.config/nvim
-                    if client.workspace_folders then
-                        local path = client.workspace_folders[1].name;
-                        if vim.uv.fs_stat(path .. "/.luarc.json") or vim.uv.fs_stat(path .. "/.luarc.jsonc") then
-                            return;
-                        end
-                    end
-                    client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua, {
-                        runtime = {
-                            version = "LuaJIT"
-                        },
-                        workspace = {
-                            checkThirdParty = false,
-                            library = {
-                                vim.env.VIMRUNTIME,
-                                "${3rd}/luv/library", -- provides vim.uv.*
-                            }
-                        },
-                    })
-                end,
-                capabilities = lsp_client_caps,
-                settings = { Lua = {} }
-            }
-        end,
-    }
+    handlers = { lsp_default }
 }
 
 -- attempt to spawn the servers to configure them
-if pcall(vim.system, ({"zls", "version"})) then
+if pcall(vim.system, ({ "zls", "version" })) then
     lsp_default("zls")
 end
 
-if pcall(vim.system, ({"ocamllsp", "--version"})) then
+if pcall(vim.system, ({ "ocamllsp", "--version" })) then
     lsp_default("ocamllsp")
 end
+
+vim.lsp.config('lua_ls', {
+    on_init = function(client)
+        if client.workspace_folders then
+            local path = client.workspace_folders[1].name
+            if
+                path ~= vim.fn.stdpath('config')
+                and (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc'))
+            then
+                return
+            end
+        end
+
+        client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
+            runtime = {
+                version = 'LuaJIT',
+                path = {
+                    'lua/?.lua',
+                    'lua/?/init.lua',
+                },
+            },
+            -- Make the server aware of Neovim runtime files
+            workspace = {
+                checkThirdParty = false,
+                library = {
+                    vim.env.VIMRUNTIME,
+                    '${3rd}/luv/library',
+                    -- '${3rd}/busted/library'
+                }
+            }
+        })
+    end,
+    settings = {
+        Lua = {}
+    }
+})
